@@ -1,7 +1,19 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QToolBar, QLineEdit, QAction, QTabWidget, QVBoxLayout, QWidget, QMenu
-from PyQt5.QtWebEngineWidgets import QWebEngineView
-from PyQt5.QtCore import QUrl, Qt
+## je vais commenter mon code -> ça vous permet de comprendre à quoi servent mes lignes ;)
+#ici j'importe tous les modules nécessaires
+
 import sys
+import os
+
+try:
+
+    from PyQt5.QtWidgets import QApplication, QMainWindow, QToolBar, QLineEdit, QAction, QTabWidget, QVBoxLayout, QWidget, QMenu
+    from PyQt5.QtWebEngineWidgets import QWebEngineView
+    from PyQt5.QtCore import QUrl, Qt
+
+except (ImportError, ImportWarning) as err:
+
+    print(f"Erreur lors de l'imporation des modules.\nDétails:\n{err}", file=sys.stderr)
+    exit(1)
 
 # Vérifie si une instance existe
 application = QApplication.instance()
@@ -9,7 +21,7 @@ if not application:
     application = QApplication(sys.argv)
 
 # URL de la page d'accueil
-home_url = QUrl("https://leo62-glitch.github.io/cedzee-google/")
+home_url = os.path.abspath("./web/index.html")
 
 class BrowserWindow(QMainWindow):
     def __init__(self):
@@ -34,7 +46,7 @@ class BrowserWindow(QMainWindow):
         self.add_navigation_buttons()
 
         # Premier onglet
-        self.add_new_tab(home_url, "Nouvel Onglet")
+        self.add_new_tab(QUrl.fromLocalFile(home_url), "Nouvel Onglet")
 
         # Menu contextuel
         self.tabs.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -111,10 +123,10 @@ class BrowserWindow(QMainWindow):
         self.adress_input.setCursorPosition(0)
 
     def go_home(self):
-        self.current_browser().setUrl(home_url)
+        self.current_browser().setUrl(QUrl.fromLocalFile(home_url))
 
     def open_new_tab(self):
-        self.add_new_tab(home_url, "Nouvel Onglet")
+        self.add_new_tab(QUrl.fromLocalFile(home_url), "Nouvel Onglet")
 
     def show_tab_context_menu(self, position):
         menu = QMenu()
